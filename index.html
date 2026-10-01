@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ako dobre poznáš Jamala? | Kvíz 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 31, 51, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --accent-glow: rgba(168, 85, 247, 0.35);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --correct-bg: rgba(34, 197, 94, 0.15);
+            --correct-border: #22c55e;
+            --wrong-bg: rgba(239, 68, 68, 0.15);
+            --wrong-border: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Glow Backgrounds */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+        }
+        body::before {
+            background: #6366f1;
+            top: 10%;
+            left: 10%;
+        }
+        body::after {
+            background: #ec4899;
+            bottom: 10%;
+            right: 10%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 580px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Header / Intro */
+        .intro-box {
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #c084fc;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 16px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.description {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        /* Buttons */
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 18px;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px var(--accent-glow);
+            transition: all 0.3s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--accent-glow);
+        }
+
+        .btn-main:active {
+            transform: translateY(0);
+        }
+
+        /* Quiz Section */
+        .hidden {
+            display: none !important;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 10%;
+            background: var(--accent-gradient);
+            border-radius: 100px;
+            transition: width 0.4s ease;
+        }
+
+        .question-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            color: var(--text-main);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .option-btn.correct {
+            background: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+            color: #4ade80;
+        }
+
+        .option-btn.wrong {
+            background: var(--wrong-bg) !important;
+            border-color: var(--wrong-border) !important;
+            color: #f87171;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            transform: none;
+        }
+
+        /* Results Screen */
+        .result-box {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 24px auto;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- ÚVODNÁ OBRAZOVKA -->
+        <div id="intro-screen" class="intro-box">
+            <span class="badge">OFICIÁLNY KVÍZ</span>
+            <h1>Ako dobre poznáš Jamala? 🔥</h1>
+            <p class="description">
+                Chceš si overiť, či Jamala naozaj poznáš tak dobre, ako si myslíš? Otestuj svoje vedomosti v 10 rýchlych otázkach a zisti svoje skóre!
+            </p>
+            <button class="btn-main" onclick="startQuiz()">Spustiť kvíz 🚀</button>
+        </div>
+
+        <!-- KVÍZOVÁ OBRAZOVKA -->
+        <div id="quiz-screen" class="hidden">
+            <div class="quiz-header">
+                <span class="badge">Jamalov Kvíz</span>
+                <span id="progress-text" class="progress-text">Otázka 1 z 10</span>
+            </div>
+            
+            <div class="progress-bar-bg">
+                <div id="progress-bar" class="progress-bar-fill"></div>
+            </div>
+
+            <h2 id="question-text" class="question-title">Načítavam otázku...</h2>
+
+            <div id="options-container" class="options-grid"></div>
+        </div>
+
+        <!-- VÝSLEDKOVÁ OBRAZOVKA -->
+        <div id="result-screen" class="result-box hidden">
+            <span class="badge">Tvoj výsledok</span>
+            <h1>Kvíz je dokončený! 🎉</h1>
+            
+            <div class="score-circle">
+                <span id="final-score">0%</span>
+            </div>
+
+            <p id="result-message" class="description">Načítavam vyhodnotenie...</p>
+            
+            <button class="btn-main" onclick="restartQuiz()">Skúsiť znova 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "1. Kedy sa Jamal narodil? 🎂",
+                options: ["A) 15. 7. 2008", "B) 30. 8. 2009", "C) 12. 10. 2010"],
+                correct: 1
+            },
+            {
+                q: "2. Akú hru má Jamal rád? 🎮",
+                options: ["A) FIFA", "B) Minecraft", "C) UFC"],
+                correct: 2
+            },
+            {
+                q: "3. Čo má Jamal rád? 🎵",
+                options: ["A) Maľovanie", "B) Hudbu", "C) Rybolov"],
+                correct: 1
+            },
+            {
+                q: "4. Na aký nástroj Jamal hrá? 🎸",
+                options: ["A) Husle", "B) Saxofón", "C) Gitara"],
+                correct: 2
+            },
+            {
+                q: "5. Čím by sa Jamal chcel v budúcnosti zaoberať? 💈",
+                options: ["A) Barberingom", "B) Automechanikou", "C) Kuchárstvom"],
+                correct: 0
+            },
+            {
+                q: "6. Aký žáner seriálov má Jamal rád? 🎬",
+                options: ["A) Historické", "B) Akčné a fantasy", "C) Dokumentárne"],
+                correct: 1
+            },
+            {
+                q: "7. Aké je Jamalovo obľúbené auto? 🚗",
+                options: ["A) Mercedes", "B) Ford Mustang", "C) BMW"],
+                correct: 1
+            },
+            {
+                q: "8. Aká je Jamalova obľúbená farba? 🎨",
+                options: ["A) Modrá", "B) Zelená", "C) Červená"],
+                correct: 0
+            },
+            {
+                q: "9. Kde Jamal žije? 🏠",
+                options: ["A) Bratislava", "B) Košice", "C) Nitra"],
+                correct: 2
+            },
+            {
+                q: "10. Koľko má Jamal súrodencov? 👨‍👩‍👧‍👦",
+                options: ["A) 3", "B) 1", "C) 2"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        function startQuiz() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            currentQuestion = 0;
+            score = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            canAnswer = true;
+            const qData = questions[currentQuestion];
+            
+            document.getElementById('progress-text').innerText = `Otázka ${currentQuestion + 1} z ${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            document.getElementById('question-text').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            qData.options.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => selectOption(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const qData = questions[currentQuestion];
+            const allBtns = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === qData.correct) {
+                selectedBtn.classList.add('correct');
+                score++;
+            } else {
+                selectedBtn.classList.add('wrong');
+                allBtns[qData.correct].classList.add('correct');
+            }
+
+            allBtns.forEach(btn => btn.disabled = true);
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1200);
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Výpočet v percentách
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').innerText = `${percentage}%`;
+
+            const msgEl = document.getElementById('result-message');
+            if (percentage === 100) {
+                msgEl.innerText = "Klobúk dole! Poznáš Jamala úplne dokonale na 100%! 🏆";
+            } else if (percentage >= 70) {
+                msgEl.innerText = "Super výkon! Jamala poznáš veľmi dobre. 😎";
+            } else if (percentage >= 40) {
+                msgEl.innerText = "Docela dobré, ale ešte máš čo dobiehať! 😉";
+            } else {
+                msgEl.innerText = "Uff, vyzerá to, že sa s Jamalom musíte ešte lepšie spoznať! 😅";
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
